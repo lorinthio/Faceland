@@ -1,0 +1,8 @@
+name: LorinthsRpWarps
+main: me.Lorinth.RpWarps.RpWarpsMain
+version: 1.0
+description: A plugin remake for the Faceland Server
+softdepend: [Holograms]
+commands:
+    quickwarp:
+        description: Configures the warp you are looking at
