@@ -1,0 +1,8 @@
+name: LorinthsBossApi
+main: me.Lorinth.BossApi.BossApi
+version: 1.0
+description: A plugin that provides an awesome boss system!
+commands:
+    boss:
+        description: Gives access to boss commands
+        permission: Bosses.all

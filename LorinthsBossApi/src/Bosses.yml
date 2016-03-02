@@ -1,0 +1,61 @@
+Krogath:
+    type: ZOMBIE
+    name: "&4Krogath"
+    hp: 100
+    damage: 10
+    #0.2 is normal player speed
+    move_speed: 0.25
+    exp_reward: 100
+    LootTable : PitBoss10
+    #Mount:
+        #Name: <nameOfBoss>
+        #RemoveOnDeath: true/false 
+    Particles:
+        radius: 2
+        count: 40
+        effect: flame
+        data: 0
+    Equipment:
+        ###Can take basic item ids or names from Items.yml
+        held: 267
+        helm: 298
+        chest: 303
+        legs: 316
+        feet: 309
+    Abilities:
+        OnHit: #When a boss attacks something, these have a % chance to trigger
+            Phase1:
+            - "KrogathSmash 15%"
+            #- AbilityName2 10%
+            Phase2:
+            - "KrogathSmash 17%"
+            Phase3:
+            - "KrogathSmash 19%"
+            Phase4:
+            - "KrogathSmash 21%"
+            Phase5:
+            - "KrogathSmash 25%"
+        WhenHit: #When boss gets hit, these have a % chance to trigger
+            Phase1:
+            - "KrogathHeal 15%"
+            Phase2:
+            - "KrogathHeal 20%"
+            Phase3:
+            - "KrogathHeal 25%"
+            Phase4:
+            - "KrogathHeal 30%"
+            Phase5:
+            - "KrogathHeal 35%"
+        OnNewPhase: 
+            #Not all or any of these phases are required, this is an example setup
+            #These trigger on entering a new health phase.
+            #Phase1: #80-100% hp, Will trigger when first hit
+            #- AbilityName4
+            Phase2: #60-80% hp
+            - KrogathPhase2
+            #Phase3: #40-60% hp
+            #- AbilityName6
+            #Phase4: #20-40% hp
+            #- AbilityName7
+            #Phase5: #0-20% hp
+            #- AbilityName8

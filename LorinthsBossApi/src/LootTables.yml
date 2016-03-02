@@ -1,0 +1,25 @@
+#Name of the Loot-Table
+PitBoss10:
+    #Percent chance for each item to drop, can take a double
+    #This will roll to select one of these items, with a 40% of dropping nothing
+    pitboss10bow: 10
+    pitboss10sword: 10
+    pitboss10helm: 10
+    pitboss10swordII: 10
+    pitboss10gem: 20
+PitBoss10V2:
+    #This layout will select an item(or air), to drop from each section
+    Item1:
+        #30% chance to be one of these items, 70% chance to drop nothing
+        pitboss10bow: 10
+        pitboss10sword: 10
+        pitboss10swordII: 10
+    Item2:
+        #IN ADDITION, has a 50% to drop a gem as well
+        pitboss10gem: 50
+PitBoss20:
+    pitboss20helm: 10
+    pitboss20boots: 10
+    pitboss20kama: 10
+    pitboss20bootsII: 10
+    pitboss20gem: 20

@@ -1,0 +1,96 @@
+#Abilities.yml
+
+#Abilities are made up of any number of actions...
+#Action List
+#NOTE : Any <variable> is a spot where you enter your value
+
+#Target Types
+#Self - The caster
+#Target - Target of the Caster
+#AoeCreatures - Creatures within a radius of the caster (requires argument radius:<radius>)
+#AoePlayers - Players within a radius of the caster (requires argument radius:<radius>)
+
+
+#Heal: heals the <targetType>, for <healamount> hp
+# Required Arguments : target:<targetType> amount:<healamount>
+# Example: - "Heal target:Self amount:100"
+# Result: Heals the caster for 100 health, (does not heal over max)
+
+#Ignite: Sets the player on fire with a duration of <seconds>, dealing <damage> each second
+# Required Arguments : target:<targetType> duration:<seconds> damage:<damagePerSecond>
+# Example: - "Ignite target:Target duration:5"
+# Result: Sets target player on fire for 5 seconds
+
+#Knockback: Knocksback the <targetType>, with <horizontal> force away, and <vertical> force up
+# Required Arguments : target:<targetType> h:<horizontal> v:<vertical>
+# Example: - "Knockback target:AoePlayers radius:12 h:5 v:3"
+# Result: Knocksback all players within 12 blocks back with a force of 5 and up with a force of 3
+
+#LaunchFireball: Launches a fireball towards the bosses current target with <speed> force, and dealing
+#	<damage> damage
+# Required Arguments : target:<targetType> damage:<damage> speed:<speed>
+# Example: - "LaunchFireball damage:8 speed:2"
+# Result: Launches a fireball towards the target that deals 8 damage, with speed 2
+
+#LaunchSnowball: Launches a snowball towards the current target with <speed> force, and dealing
+#	<damage> damage. (The snowball does travel straight)
+# Required Arguments : target:<targetType> damage:<damage> speed:<speed>
+# Example: - "LaunchSnowball damage:10 speed:1"
+# Result: Launches a snowball towards the target, that deals 10 damage and travels with speed 1
+
+#Lightning: Strikes lightning at the <targetType>, for <damage> damage
+# Required Arguments: target:<targetType> damage:<damage>
+# Example: - "Lightning target:Target damage:5"
+# Result: Casts lightning on the bosses target dealing normal 5 damage(Will trigger event to go through armor)
+
+#PotionEffect: Gives the <targetType>, the <potionEffectType> with <duration> and <intensity>
+# Required Arguments: target:<targetType> type:<potionEffectType> duration:<duration> intensity:<intensity>
+# Example: - "PotionEffect target:AoeCreatures radius:5 type:STRENGTH duration:10 intensity:2"
+# Result: The boss buffs all creatures within 5 blocks, with the Strength potion effect for 10 seconds, 
+#			with intensity 2
+
+#Speak: Makes the entity speak the desired <message> to the <targetType>
+# Required Arguments: target:<targetType> message:<message>
+# NOTE: TargetType : AoeCreatures, is not allowed, also instead of spaces in the message, use an underscore _
+# Example: - "Speak target:AoePlayers radius:10 message:Die_you_maggots!"
+# Result: Sends the message to all players within 10 blocks, Name: Die you maggots!
+
+#Summon: Summons <count> of the <EntityType>, at the bosses position
+# Required Arguments: type:<EntityType> count:<count>
+# Optional: You can exchange the type:<EntityType> argument for name:<BossName> argument
+#				This will spawn a  boss instead of a normal entity
+# Example: - "Summon type:Zombie count:5"
+# Result: Summons 5 zombies at the bosses location
+# Example2: - "Summon name:Krogath count:1"
+# Result: Summons 1 Krogath at the bosses location
+
+
+#Teleport: Teleports the caster to the desired <x> <y> <z> coordinate in its current world.
+# Required Arguments: x:<x> y:<y> z:<z>
+# Example: - "Teleport x:-10 y:64 z: 112"
+# Result: Teleports the boss to the location, (-10, 64, 112)
+
+#TrueDamage: Deals true <damage> to the <targetType>
+# Required Arguments: target:<targetType> damage:<damage>
+# Example: - "TrueDamage target:Target damage:10"
+# Result: deals 10 true damage to the target 
+
+#Wait: Pauses the ability before continuing on for <second> seconds, can take decimals
+# Required Arguments: delay:<second>
+# Example: - "Wait delay:5"
+# Result: Waits 5 seconds, before continuing the current ability
+
+KrogathSmash:
+    Cooldown: 10
+    Actions:
+    - "Speak target:AoePlayers radius:20 message:Krogath:_I_will_crush_you!"
+    - "Truedamage target:Target damage:8"
+KrogathHeal:
+    Cooldown: 20
+    Actions:
+    - "Speak target:AoePlayers radius:20 message:Krogath:_I_will_not_be_defeated_so_easily!"
+    - "Heal target:Self amount:25"
+KrogathPhase2:
+    Cooldown: 0
+    Actions:
+    - "Speak target:AoePlayers radius20 message:Krogath:_Nooooo_I_am_in_Phase2!"

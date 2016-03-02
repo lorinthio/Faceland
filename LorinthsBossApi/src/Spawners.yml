@@ -1,0 +1,10 @@
+1:
+    Location:
+        world: world
+        x: 143
+        y: 77
+        z: -465
+    Boss: Krogath
+    #RespawnDelay is in seconds, 300 = 5 mins	
+    RespawnDelay: 10
+    MaxDistance: 15
