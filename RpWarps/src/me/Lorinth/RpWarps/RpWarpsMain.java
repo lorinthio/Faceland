@@ -155,9 +155,16 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 			for(String id : serverWarpList){
 				Warp w = LoadWarp(id, true);
 				HashMap<Vector, Warp> warps = locationWarps.get(w.loc.getWorld());
-				warps.put(w.loc.toVector().toBlockVector(), w);
-				locationWarps.put(w.loc.getWorld(), warps);
-				this.serverWarps.add(w);
+				if(warps.containsKey(w.loc.toVector().toBlockVector())){
+					w.Destroy();
+					DestroyWarp(w);
+					System.out.println("Removed warp, " + id);
+				}
+				else{
+					warps.put(w.loc.toVector().toBlockVector(), w);
+					locationWarps.put(w.loc.getWorld(), warps);
+					this.serverWarps.add(w);
+				}
 			}
 		}
 		catch(NullPointerException e){
@@ -168,9 +175,16 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 			for(String id : playerWarpList){
 				Warp w = LoadWarp(id, false);
 				HashMap<Vector, Warp> warps = locationWarps.get(w.loc.getWorld());
-				warps.put(w.loc.toVector().toBlockVector(), w);
-				locationWarps.put(w.loc.getWorld(), warps);
-				this.playerWarps.put(id, w);
+				if(warps.containsKey(w.loc.toVector().toBlockVector())){
+					w.Destroy();
+					DestroyWarp(w);
+					System.out.println("Removed warp, " + id);
+				}
+				else{
+					warps.put(w.loc.toVector().toBlockVector(), w);
+					locationWarps.put(w.loc.getWorld(), warps);
+					this.playerWarps.put(id, w);
+				}
 			}
 		}
 		catch(NullPointerException e){
@@ -181,8 +195,15 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 			for(String id : accessList){
 				Warp w = LoadAccess(id);
 				HashMap<Vector, Warp> warps = locationWarps.get(w.loc.getWorld());
-				warps.put(w.loc.toVector().toBlockVector(), w);
-				locationWarps.put(w.loc.getWorld(), warps);
+				if(warps.containsKey(w.loc.toVector().toBlockVector())){
+					w.Destroy();
+					DestroyWarp(w);
+					System.out.println("Removed warp, " + id);
+				}
+				else{
+					warps.put(w.loc.toVector().toBlockVector(), w);
+					locationWarps.put(w.loc.getWorld(), warps);
+				}
 			}
 		}
 		catch(NullPointerException e){
@@ -492,11 +513,30 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 				if(args[0].equalsIgnoreCase("setaccess")){
 					MakeAccessWarp(p);
 				}
+				else if(args[0].equalsIgnoreCase("remove")){
+					RemoveWarp(p);
+				}
+
 			}
 		}
 		return false;
 	}
 	
+	private void RemoveWarp(Player p) {
+		Block b = p.getTargetBlock((Set<Material>)null, 10);
+		Warp w = this.locationWarps.get(b.getWorld()).get(b.getLocation().toVector().toBlockVector());
+		if(w != null){
+			if(w.isOwnedByPlayer(p)){
+				w.Destroy();
+				
+				HashMap<Vector, Warp> warps = locationWarps.get(b.getWorld());
+				warps.remove(w);
+				locationWarps.put(b.getWorld(), warps);
+				DestroyWarp(w);
+			}
+		}
+	}
+
 	public void ChangeIcon(Player p){
 		Block b = p.getTargetBlock((Set<Material>)null, 10);
 		Warp w = this.locationWarps.get(b.getWorld()).get(b.getLocation().toVector().toBlockVector());
