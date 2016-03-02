@@ -1,0 +1,7 @@
+name: LorinthsMounts
+main: me.lorinth.mounts.LorinthsMountsMain
+version: 1.0
+description: A plugin that provides a permissions based mount system
+commands:
+    mounts:
+        description: Opens up your mount options!
