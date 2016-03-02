@@ -635,7 +635,7 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 	}
 	
 	public String convertToMColors(String line){
-		return line.replaceAll("&", "ง");
+		return line.replaceAll("&", "ยง");
 	}
 	
 }

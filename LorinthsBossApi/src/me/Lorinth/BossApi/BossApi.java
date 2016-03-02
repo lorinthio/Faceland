@@ -27,13 +27,12 @@ import me.Lorinth.BossApi.Abilities.TrueDamage;
 import me.Lorinth.BossApi.Abilities.Wait;
 import me.Lorinth.BossApi.Events.BossDeathEvent;
 import me.Lorinth.BossApi.Events.BossSpawnEvent;
-import net.md_5.bungee.api.ChatColor;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Server.Spigot;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -45,13 +44,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -1120,7 +1116,7 @@ public class BossApi extends JavaPlugin implements Listener{
 	}
 	
 	public String convertToMColors(String line){
-		return line.replaceAll("&", "ง");
+		return line.replaceAll("&", "ยง");
 	}
 	
 	public boolean isBoss(Entity ent){

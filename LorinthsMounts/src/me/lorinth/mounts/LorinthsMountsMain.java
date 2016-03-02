@@ -328,7 +328,7 @@ public class LorinthsMountsMain extends JavaPlugin implements Listener{
 	}
 	
 	public String convertToMColors(String line){
-		return line.replaceAll("&", "�");
+		return line.replaceAll("&", "§");
 	}
 	
 	public List<String> convertToMColors(List<String> lines){
