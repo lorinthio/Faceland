@@ -26,20 +26,33 @@ public class Heal extends Action{
 	public void execute(Creature ent){
 		if(type == TargetType.Target){
 			LivingEntity targ = ent.getTarget();
-			targ.setHealth(Math.min(targ.getMaxHealth(), targ.getHealth() + heal_amount));
-			
+			if (targ.getHealth() > 0) {
+                targ.setHealth(Math.min(targ.getMaxHealth(), targ.getHealth() + heal_amount));
+            }
+			return;
 		}
-		else if(type == TargetType.Self){
-			ent.setHealth(Math.min(ent.getMaxHealth(), ent.getHealth() + heal_amount));
+
+		if(type == TargetType.Self){
+            if (ent.getHealth() > 0) {
+                ent.setHealth(Math.min(ent.getMaxHealth(), ent.getHealth() + heal_amount));
+            }
+            return;
 		}
-		else if(type == TargetType.AoeCreatures){
+
+		if(type == TargetType.AoeCreatures){
 			for(Creature c : getNearbyCreatures(radius, ent)){
-				c.setHealth(Math.min(c.getMaxHealth(), c.getHealth() + heal_amount));
+                if (c.getHealth() > 0) {
+                    c.setHealth(Math.min(c.getMaxHealth(), c.getHealth() + heal_amount));
+                }
 			}
+            return;
 		}
-		else if(type == TargetType.AoePlayers){
+
+		if(type == TargetType.AoePlayers){
 			for(Player p : getNearbyPlayers(radius, ent)){
-				p.setHealth(Math.min(p.getMaxHealth(), p.getHealth() + heal_amount));
+                if (p.getHealth() > 0) {
+                    p.setHealth(Math.min(p.getMaxHealth(), p.getHealth() + heal_amount));
+                }
 			}
 		}
 		
