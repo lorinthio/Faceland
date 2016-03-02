@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import net.md_5.bungee.api.ChatColor;
-
+import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -106,11 +105,11 @@ public class Warp {
 		meta.setDisplayName(name);
 		List<String> lore = new ArrayList<String>();
 		if(ServerOwned){
-			lore.add(ChatColor.WHITE + "Creator : " + ChatColor.GOLD + "Faceland!");
+			lore.add(ChatColor.WHITE + "Owner: " + ChatColor.BLUE + "Faceland!");
 		}
 		else{
 			OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(owner));
-			lore.add(ChatColor.WHITE + "Creator: " + ChatColor.GRAY + p.getName());
+			lore.add(ChatColor.WHITE + "Owner: " + ChatColor.GRAY + p.getName());
 			lore.add(ChatColor.WHITE + "World: " + ChatColor.GRAY + loc.getWorld().getName());
 			lore.add(ChatColor.WHITE + "Location: "  + ChatColor.GRAY + "("  +loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ() + ")");
 		}

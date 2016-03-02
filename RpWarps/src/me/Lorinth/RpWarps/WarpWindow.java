@@ -1,10 +1,9 @@
 package me.Lorinth.RpWarps;
 
-import java.awt.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -44,7 +43,7 @@ public class WarpWindow {
 	}
 	
 	void createWindow(){
-		play.sendMessage(ChatColor.LIGHT_PURPLE + "Opening warp selector!");
+		play.sendMessage(ChatColor.GREEN + "Opening teleport menu!");
 		inv = Bukkit.createInventory(null, 54, ChatColor.WHITE + "QuickWarp!");
 		
 		int pos = 0;
@@ -93,7 +92,7 @@ public class WarpWindow {
 				Warp w = windowWarps.get(event.getSlot());
 				if(w.ServerOwned){
 					w.teleport(play);
-					play.sendMessage(ChatColor.GREEN + "You have warped to, " + w.name);
+					play.sendMessage(ChatColor.GREEN + "You have warped to " + w.name + ChatColor.GREEN +"!");
 			
 				}
 				else{

@@ -2,9 +2,9 @@ package me.lorinth.mounts;
 
 import java.util.List;
 
-import net.md_5.bungee.api.ChatColor;
 import net.minecraft.server.v1_8_R3.GenericAttributes;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;

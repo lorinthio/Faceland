@@ -3,9 +3,7 @@ package me.Lorinth.RpWarps;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.md_5.bungee.api.ChatColor;
-
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class PlayerWarpProfile {
@@ -13,7 +11,7 @@ public class PlayerWarpProfile {
 	List<String> knownWarps = new ArrayList<String>();
 	RpWarpsMain main;
 	Player p;
-	
+
 	public PlayerWarpProfile(Player p, RpWarpsMain main){
 		this.p = p;
 		this.main = main;
@@ -40,10 +38,11 @@ public class PlayerWarpProfile {
 		if(!knownWarps.contains(w.ID)){
 			if(knownWarps.size() < 36){
 				knownWarps.add(w.ID);
-				p.sendMessage(ChatColor.GREEN + "You have learned the location, " + w.name);
+				p.sendMessage(ChatColor.GREEN + "This location has been memorized and added to your list!");
+				p.sendMessage(ChatColor.GREEN + "You now have access to" + w.name + ChatColor.GREEN + "!");
 			}
 			else{
-				p.sendMessage(ChatColor.RED + "Your ");
+                p.sendMessage(ChatColor.RED + "You have memorized the maximum number of locations!");
 			}
 		}
 	}
