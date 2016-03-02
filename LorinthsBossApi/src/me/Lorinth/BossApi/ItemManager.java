@@ -198,14 +198,16 @@ public class ItemManager {
 				if(t != null){
 					if(t instanceof LootTable){
 						ItemStack drop = ((LootTable) t).getDrop();
+                        drop.setAmount(1);
 						if(drop.getType() != Material.AIR){
-							e.getWorld().dropItem(e.getLocation(), drop.clone());
+							e.getWorld().dropItemNaturally(e.getLocation(), drop.clone());
 						}
 					}
 					else if(t instanceof LootTableSet){
 						for(ItemStack i : ((LootTableSet) t).getLoot()){
+							i.setAmount(1);
 							if(i.getType() != Material.AIR){
-								e.getWorld().dropItem(e.getLocation(), i.clone());
+								e.getWorld().dropItemNaturally(e.getLocation(), i.clone());
 							}
 						}
 					}
