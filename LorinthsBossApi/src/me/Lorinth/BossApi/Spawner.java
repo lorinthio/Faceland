@@ -30,6 +30,8 @@ public class Spawner
 	private int spawnTaskId = 0;
 	private int distTaskId = 0;
 	
+	private int resetCount = 0;
+	
 	public String key;
 
 	public Spawner(String key, BossApi api, Boss b, Location loc, long delay, double distance)
@@ -178,6 +180,10 @@ public class Spawner
 
 	public void spawn()
 	{	
+		if(distTaskId != 0){
+			Bukkit.getScheduler().cancelTask(distTaskId);
+		}
+		
 		if (this.loaded && loc.getChunk().isLoaded())
 		{
 			boolean playerFound = false;
@@ -191,6 +197,8 @@ public class Spawner
 			arrow.remove();
 			
 			if(playerFound){
+				
+				resetCount = 0;
 				
 				//System.out.println("Player in Range!");
 				
@@ -218,23 +226,47 @@ public class Spawner
 							double distance = bI.ent.getLocation().distanceSquared(spawnerLoc);
 							if (distance > maxDistSqr)
 							{
-								ent.teleport(loc);
-								((Creature)ent).setTarget(null);
+								resetCount += 1;
 								
-								if(bi != null){
-									BossInstance last = bi;
-									BossInstance mount = bi.mount;
-									while(mount != null && last != null){
-										if(mount.ent.isValid() && !mount.ent.isDead()){
-											mount.ent.teleport(loc);
-											if(mount.ent instanceof Creature){
-												((Creature)mount.ent).setTarget(null);
-											}
-											mount.ent.setPassenger(last.ent);
+								if(resetCount > 3){
+									if(bi != null){
+										bi.ent.remove();
+										BossInstance mount = bi.mount;
+										while(mount != null){
+											mount.ent.remove();
 										}
-										last = mount;
-										mount = mount.mount;
 										
+										Bukkit.getScheduler().scheduleSyncDelayedTask(BossApi.getPlugin(), new Runnable(){
+
+											@Override
+											public void run() {
+												spawn();
+											}
+											
+										}, 1);
+									}
+									
+									
+								}
+								else{
+									ent.teleport(loc);
+									((Creature)ent).setTarget(null);
+									
+									if(bi != null){
+										BossInstance last = bi;
+										BossInstance mount = bi.mount;
+										while(mount != null && last != null){
+											if(mount.ent.isValid() && !mount.ent.isDead()){
+												mount.ent.teleport(loc);
+												if(mount.ent instanceof Creature){
+													((Creature)mount.ent).setTarget(null);
+												}
+												mount.ent.setPassenger(last.ent);
+											}
+											last = mount;
+											mount = mount.mount;
+											
+										}
 									}
 								}
 							}

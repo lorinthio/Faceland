@@ -1116,7 +1116,7 @@ public class BossApi extends JavaPlugin implements Listener{
 	}
 	
 	public String convertToMColors(String line){
-		return line.replaceAll("&", "ยง");
+		return line.replaceAll("&", "ง");
 	}
 	
 	public boolean isBoss(Entity ent){
