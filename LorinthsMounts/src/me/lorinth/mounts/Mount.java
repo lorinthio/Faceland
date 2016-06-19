@@ -2,13 +2,12 @@ package me.lorinth.mounts;
 
 import java.util.List;
 
-import net.minecraft.server.v1_8_R3.GenericAttributes;
+import net.minecraft.server.v1_10_R1.GenericAttributes;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Horse.Color;
