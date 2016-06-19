@@ -92,7 +92,7 @@ public class WarpWindow {
 				Warp w = windowWarps.get(event.getSlot());
 				if(w.ServerOwned){
 					w.teleport(play);
-					play.sendMessage(ChatColor.GREEN + "You have warped to " + w.name + ChatColor.GREEN +"!");
+					play.sendMessage(ChatColor.GREEN + "You have warped to " + w.name + ChatColor.GREEN + "!");
 			
 				}
 				else{
@@ -102,9 +102,6 @@ public class WarpWindow {
 		}
 		catch(NullPointerException e){
 			//NO ITEM CLICKED
-		}
-		catch(ArrayIndexOutOfBoundsException e){
-			//Outside Window
 		}
 	}
 	

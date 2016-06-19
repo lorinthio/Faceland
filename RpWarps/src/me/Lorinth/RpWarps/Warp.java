@@ -14,11 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.sainttx.holograms.HologramManager;
-import com.sainttx.holograms.api.Hologram;
-import com.sainttx.holograms.internal.HologramImpl;
-import com.sainttx.holograms.internal.HologramLineImpl;
-
 public class Warp {
 
 	String ID;
@@ -31,9 +26,6 @@ public class Warp {
 	RpWarpsMain main;
 	
 	ItemStack display;
-	
-	Hologram holo;
-	Hologram holo2;
 	
 	public Warp(RpWarpsMain main){
 		this.main = main;
@@ -71,9 +63,8 @@ public class Warp {
 		else if(p.hasPermission("LRWarps.admin")){
 			p.sendMessage(ChatColor.GOLD + "Use " + ChatColor.WHITE + "/quickwarp setaccess " + ChatColor.GOLD + "to convert this to a server warp");
 		}
-		p.playSound(loc, Sound.PORTAL, 1, 1);
-		
-		makeHologram();
+		p.playSound(loc, Sound.BLOCK_PORTAL_TRIGGER, 1, 1);
+
 		makeDisplayItem();
 	}
 	
@@ -116,60 +107,6 @@ public class Warp {
 		
 		meta.setLore(lore);
 		display.setItemMeta(meta);
-	}
-	
-	void makeHologram(){
-		try{
-			if(holo != null){
-				holo.remove();
-				holo2.remove();
-			}
-			else if(holo2 != null){
-				holo.remove();
-				holo2.remove();
-			}
-			
-			HologramImpl h = HologramManager.getInstance().getHologramByName(ID + "_0");
-			if(h != null){
-				HologramManager.getInstance().removeHologram(h);
-			}
-			h = HologramManager.getInstance().getHologramByName(ID + "_1");
-			if(h != null){
-				HologramManager.getInstance().removeHologram(h);
-			}
-			
-			if(isAccessPoint){
-				holo = new HologramImpl(ID + "_0", loc.clone().add(0.5, 2.25, 0.5), false);
-				holo.addLine(new HologramLineImpl(holo, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Faceland Teleporter Menu!"));
-				holo2 = new HologramImpl(ID + "_1", loc.clone().add(0.5, 1.95, 0.5), false);
-				holo2.addLine(new HologramLineImpl(holo2,"[ Click the light to use! ]"));
-			}
-			else{
-				if(ServerOwned){
-					holo = new HologramImpl(ID + "_0", loc.clone().add(0.5, 2.25, 0.5), false);
-					holo.addLine(new HologramLineImpl(holo, ChatColor.GOLD + "" + ChatColor.BOLD + "Faceland Server Teleporter!"));
-					holo2 = new HologramImpl(ID + "_1", loc.clone().add(0.5, 1.95, 0.5), false);
-					holo2.addLine(new HologramLineImpl(holo2,"[ Click the light to use! ]"));
-				}
-				else{
-					holo = new HologramImpl(ID + "_0", loc.clone().add(0.5, 2.25, 0.5), false);
-					holo.addLine(new HologramLineImpl(holo, ChatColor.AQUA + "" + ChatColor.BOLD + "Faceland Player Teleporter!"));
-					holo2 = new HologramImpl(ID + "_1", loc.clone().add(0.5, 1.95, 0.5), false);
-					holo2.addLine(new HologramLineImpl(holo2,"[ Click the light to use! ]"));
-				}
-			}
-			
-			holo.refresh();
-			holo2.refresh();
-		}
-		catch(IllegalArgumentException e){
-			//don't make holo
-		}
-	}
-	
-	void Destroy(){
-		holo.remove();
-		holo2.remove();
 	}
 	
 	public void SetServerOwned(boolean set){

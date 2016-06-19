@@ -39,7 +39,7 @@ public class PlayerWarpProfile {
 			if(knownWarps.size() < 36){
 				knownWarps.add(w.ID);
 				p.sendMessage(ChatColor.GREEN + "This location has been memorized and added to your list!");
-				p.sendMessage(ChatColor.GREEN + "You now have access to" + w.name + ChatColor.GREEN + "!");
+				p.sendMessage(ChatColor.GREEN + "You now have access to " + w.name + ChatColor.GREEN + "!");
 			}
 			else{
                 p.sendMessage(ChatColor.RED + "You have memorized the maximum number of locations!");

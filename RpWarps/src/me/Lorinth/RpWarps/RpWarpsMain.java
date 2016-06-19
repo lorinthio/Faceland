@@ -18,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,6 +32,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.MainHand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
@@ -83,14 +86,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 	@Override
 	public void onDisable(){
 		SaveData();
-		
-		for(Warp w : serverWarps){
-			w.Destroy();
-		}
-		for(Warp w : playerWarps.values()){
-			w.Destroy();
-		}
-		
 		printErrorLine("has been disabled!");
 	}
 	
@@ -155,8 +150,7 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 			for(String id : serverWarpList){
 				Warp w = LoadWarp(id, true);
 				HashMap<Vector, Warp> warps = locationWarps.get(w.loc.getWorld());
-				if(warps.containsKey(w.loc.toVector().toBlockVector())){
-					w.Destroy();
+				if(warps.containsKey(w.loc.toVector().toBlockVector())) {
 					DestroyWarp(w);
 					System.out.println("Removed warp, " + id);
 				}
@@ -176,7 +170,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 				Warp w = LoadWarp(id, false);
 				HashMap<Vector, Warp> warps = locationWarps.get(w.loc.getWorld());
 				if(warps.containsKey(w.loc.toVector().toBlockVector())){
-					w.Destroy();
 					DestroyWarp(w);
 					System.out.println("Removed warp, " + id);
 				}
@@ -196,7 +189,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 				Warp w = LoadAccess(id);
 				HashMap<Vector, Warp> warps = locationWarps.get(w.loc.getWorld());
 				if(warps.containsKey(w.loc.toVector().toBlockVector())){
-					w.Destroy();
 					DestroyWarp(w);
 					System.out.println("Removed warp, " + id);
 				}
@@ -237,8 +229,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 				w.Save();
 			}
 			
-			w.makeHologram();
-			
 			player.sendMessage(ChatColor.GREEN + "Converted the warp point!");
 		}
 	}
@@ -262,7 +252,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 			}
 			
 			w.isAccessPoint = true;
-			w.makeHologram();
 			w.Save();
 			player.sendMessage(ChatColor.GREEN + "Made the warp an access point!");
 		}
@@ -298,7 +287,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 			warpsYml.set("PlayerWarps." + w.ID, null);
 			this.playerWarps.remove(w.ID);
 		}
-		w.Destroy();
 	}
 	
 	public Warp LoadAccess(String key){
@@ -313,13 +301,10 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 		w.loc = new Location(Bukkit.getWorld(worldname), x, y, z);
 		w.ID = key;
 		w.isAccessPoint = true;
-		w.makeHologram();
 		return w;
 	}
 	
 	public Warp LoadWarp(String key, boolean isServerOwned){
-		printLine("Loading, " + key);
-		
 		Warp w = new Warp(this);
 		
 		if(isServerOwned){
@@ -353,8 +338,7 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 				w.mat = Material.ENDER_PEARL;
 			}
 		}
-		
-		w.makeHologram();
+
 		w.makeDisplayItem();
 		return w;
 	}
@@ -527,8 +511,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 		Warp w = this.locationWarps.get(b.getWorld()).get(b.getLocation().toVector().toBlockVector());
 		if(w != null){
 			if(w.isOwnedByPlayer(p)){
-				w.Destroy();
-				
 				HashMap<Vector, Warp> warps = locationWarps.get(b.getWorld());
 				warps.remove(w);
 				locationWarps.put(b.getWorld(), warps);
@@ -598,23 +580,29 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 	
 	@EventHandler
 	public void OnBlockRightClick(PlayerInteractEvent event){
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
-			if(event.getClickedBlock().getType() == Material.SEA_LANTERN){
-				Player p = event.getPlayer();
-				Block b = event.getClickedBlock();
-				HashMap<Vector, Warp> warps = this.locationWarps.get(p.getWorld());
-				
-				Warp w = warps.get(b.getLocation().toVector().toBlockVector());
-				if(w != null){
-					profiles.get(p).AddWarp(w);
-					WarpWindow win = new WarpWindow(p, this);
-					this.warpWindows.put(p, win);
-					
-					event.setCancelled(true);
-				}
-			}
+        if (event.getHand() != EquipmentSlot.OFF_HAND) {
+            return;
+        }
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
 		}
-	}
+        if (event.getClickedBlock().getType() != Material.SEA_LANTERN) {
+            return;
+        }
+        Player p = event.getPlayer();
+        Block b = event.getClickedBlock();
+        HashMap<Vector, Warp> warps = this.locationWarps.get(p.getWorld());
+				
+        Warp w = warps.get(b.getLocation().toVector().toBlockVector());
+
+        if(w != null){
+            profiles.get(p).AddWarp(w);
+            WarpWindow win = new WarpWindow(p, this);
+            this.warpWindows.put(p, win);
+
+            event.setCancelled(true);
+        }
+    }
 	
 	//
 	//
