@@ -61,7 +61,7 @@ public class AbilityTask extends BukkitRunnable {
 	@Override
 	public void run() {
 		if(hasDelay){
-			for(Integer time : actionsAtDelay.keySet()){
+			for(final Integer time : actionsAtDelay.keySet()){
 				if(!caster.isDead()){
 					if(time == 0){
 						for(Action a : actionsAtDelay.get(time)){

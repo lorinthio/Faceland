@@ -6,15 +6,16 @@ import java.util.HashMap;
 import me.Lorinth.BossApi.BossInstance.HealthSection;
 import me.Lorinth.BossApi.Abilities.Ability;
 import me.Lorinth.BossApi.Events.BossSpawnEvent;
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
+
+import net.minecraft.server.v1_10_R1.EntityInsentient;
+
+import net.minecraft.server.v1_10_R1.GenericAttributes;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +27,6 @@ public class Boss {
 	public double hp = 20;
 	public double damage = 4;
 	public double movespeed = 0.2;
-	public long respawnDelay = 0;
 	
 	public String mountName = "";
 	public boolean removeMountOnDeath = false;
@@ -63,10 +63,10 @@ public class Boss {
 	
 	@SuppressWarnings({ "deprecation" })
 	public BossInstance spawn(Location loc, boolean spawnerLinked){
-		loc.clone().add(0.5, 0, 0.5);
+		loc.add(0.5, 0, 0.5);
 		
 		CraftWorld world = (CraftWorld) loc.getWorld();
-		LivingEntity entity = world.spawnCreature(loc, type);
+		LivingEntity entity = (LivingEntity) world.spawnEntity(loc, type);
 		entity.getEquipment().setItemInHand(held);
 		entity.getEquipment().setItemInHandDropChance(0);
 		entity.getEquipment().setHelmet(helm);
@@ -98,7 +98,7 @@ public class Boss {
 		try{
 			if(!mountName.equalsIgnoreCase("")){
 				BossInstance mount = BossApi.getPlugin().bossNames.get(mountName).spawn(loc, false);
-				mount.ent.setPassenger(entity);
+				mount.bossEntity.setPassenger(entity);
 				bi.mount = mount;
 			}
 		}
@@ -117,7 +117,7 @@ public class Boss {
 		
 		
 		
-		//BossApi.getPlugin().OnBossSpawn(new BossSpawnEvent(bi, entity));
+		//BossApi.getPlugin().OnBossSpawn(new BossSpawnEvent(bossInstance, entity));
 		BossApi.getPlugin().OnBossSpawn(new BossSpawnEvent(bi, entity));
 		
 		return bi;

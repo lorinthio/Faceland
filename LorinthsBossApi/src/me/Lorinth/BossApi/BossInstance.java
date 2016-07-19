@@ -2,22 +2,22 @@ package me.Lorinth.BossApi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 
 import me.Lorinth.BossApi.Abilities.Ability;
+import me.Lorinth.BossApi.Tasks.ParticleTask;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 public class BossInstance {
-
 	Boss b;
-	LivingEntity ent;
+	LivingEntity bossEntity;
 	BossInstance mount;
+
+    public Spawner spawner = null;
 	
 	private HealthSection section = HealthSection.max;
 	
@@ -39,12 +39,12 @@ public class BossInstance {
 	
 	public BossInstance(Boss b, LivingEntity ent){
 		this.b = b;
-		this.ent = ent;
+		this.bossEntity = ent;
 	}
 	
 	public void StartParticles(){
 		if(particle != null){
-			ParticleTask task = new ParticleTask(ent, particle, effectRadius, effectCount, effectData);
+			ParticleTask task = new ParticleTask(bossEntity, particle, effectRadius, effectCount, effectData);
 			task.runTaskTimer(BossApi.getPlugin(), 0, 5);
 		}
 	}
@@ -54,7 +54,7 @@ public class BossInstance {
 	}
 	
 	public void onDamage(){
-		double percent = 100 * (ent.getHealth() / ent.getMaxHealth());
+		double percent = 100 * (bossEntity.getHealth() / bossEntity.getMaxHealth());
 		
 		boolean change = false;
 		
@@ -107,10 +107,10 @@ public class BossInstance {
 			sec = HealthSection.highest;
 		}
 		try{
-			for(Ability a : onHit.get(sec)){
+			for(final Ability a : onHit.get(sec)){
 				if(!onCooldown.contains(a.name)){
 					if(r.nextDouble() * 100 < a.chance){
-						a.Cast((Creature) ent);
+						a.Cast((Creature) bossEntity);
 						onCooldown.add(a.name);
 						Bukkit.getScheduler().scheduleSyncDelayedTask(BossApi.getPlugin(), new Runnable(){
 	
@@ -137,10 +137,10 @@ public class BossInstance {
 		}
 		
 		try{
-			for(Ability a : whenHit.get(section)){
+			for(final Ability a : whenHit.get(section)){
 				if(!onCooldown.contains(a.name)){
 					if(r.nextDouble() * 100 < a.chance){
-						a.Cast((Creature) ent);
+						a.Cast((Creature) bossEntity);
 						onCooldown.add(a.name);
 						Bukkit.getScheduler().scheduleSyncDelayedTask(BossApi.getPlugin(), new Runnable(){
 	
@@ -164,12 +164,16 @@ public class BossInstance {
 		whenHit();
 		onDamage();
 	}
+
+    public LivingEntity getBossEntity() {
+        return bossEntity;
+    }
 	
 	public void onEnterNewHealthSection(HealthSection section){
 		//System.out.println(onEnter.toString());
 		try{
 			for(Ability a : this.onEnter.get(section)){
-				a.Cast((Creature) ent);
+				a.Cast((Creature) bossEntity);
 			}
 		}
 		catch(NullPointerException e){

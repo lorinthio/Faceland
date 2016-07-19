@@ -2,13 +2,8 @@ package me.Lorinth.BossApi.Loot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagList;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class LootTableSet {

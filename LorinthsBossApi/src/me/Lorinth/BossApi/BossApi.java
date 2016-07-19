@@ -27,6 +27,7 @@ import me.Lorinth.BossApi.Abilities.TrueDamage;
 import me.Lorinth.BossApi.Abilities.Wait;
 import me.Lorinth.BossApi.Events.BossDeathEvent;
 import me.Lorinth.BossApi.Events.BossSpawnEvent;
+import me.Lorinth.BossApi.Tasks.DistanceTask;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
@@ -51,8 +52,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.event.world.WorldLoadEvent;
-import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
@@ -60,6 +59,7 @@ import org.bukkit.potion.PotionEffectType;
 public class BossApi extends JavaPlugin implements Listener{
 
 	private static BossApi instance;
+    private DistanceTask distanceTask;
 	public HashMap<String, Boss> bossNames = new HashMap<String, Boss>();
 	public HashMap<BossInstance, Integer> bossEntities = new HashMap<BossInstance, Integer>();
 	public HashMap<Integer, BossInstance> bossIds = new HashMap<Integer, BossInstance>();
@@ -69,7 +69,6 @@ public class BossApi extends JavaPlugin implements Listener{
 	public HashMap<Projectile, Integer> projectiles = new HashMap<Projectile, Integer>();
 	
 	public ArrayList<Spawner> spawnerList = new ArrayList<Spawner>();
-	public HashMap<World, ArrayList<Spawner>> worldSpawner = new HashMap<World, ArrayList<Spawner>>();
 	public HashMap<String, Ability> abilityList = new HashMap<String, Ability>();
 	
 	ItemManager itemManager;
@@ -88,13 +87,9 @@ public class BossApi extends JavaPlugin implements Listener{
         //  this maybe also a critical part cause some methods you might have forgotten
         //  to use the saveYamls(); on some of your methods that uses bosses.set or *.set(path,value)
         //  so we will use saveYamls(); method here to auto save what we have done
-        
-    	for(Spawner s : spawnerList){
-    		s.unLoad(false);
-    	}
     	
     	for(BossInstance bi : bossEntities.keySet()){
-    		bi.ent.remove();
+    		bi.bossEntity.remove();
     	}
     	
     }
@@ -190,6 +185,7 @@ public class BossApi extends JavaPlugin implements Listener{
 		instance = this;
 		
 		itemManager = new ItemManager(this);
+        distanceTask = new DistanceTask(this);
 		
 		bossesFile = new File(getDataFolder(), "Bosses.yml");
 		spawnersFile = new File(getDataFolder(), "Spawners.yml");
@@ -211,8 +207,11 @@ public class BossApi extends JavaPlugin implements Listener{
         
         for(World w : Bukkit.getWorlds()){
         	this.worldBossIds.put(w, new ArrayList<Integer>());
-        	worldSpawner.put(w, new ArrayList<Spawner>());
         }
+		distanceTask.runTaskTimer(this,
+				20L * 30, // Start timer after 10s
+				20L * 15 // Run it every 15s
+		);
         
         loadYamls();
         loadData();
@@ -232,7 +231,6 @@ public class BossApi extends JavaPlugin implements Listener{
 		projectiles = new HashMap<Projectile, Integer>();
 		
 		spawnerList = new ArrayList<Spawner>();
-		worldSpawner = new HashMap<World, ArrayList<Spawner>>();
 		abilityList = new HashMap<String, Ability>();
 		
 		onEnable();
@@ -257,7 +255,7 @@ public class BossApi extends JavaPlugin implements Listener{
 		for(String key : this.spawners.getConfigurationSection("").getKeys(false)){
 			//Bukkit.getConsoleSender().sendMessage("Spawner ID: " + key);
 			Boss b = this.bossNames.get(this.spawners.get(key + ".Boss"));
-			//Bukkit.getConsoleSender().sendMessage("has boss," + b.name);
+			//Bukkit.getConsoleSender().sendMessage("has boss," + boss.name);
 			double delay = spawners.getDouble(key + ".RespawnDelay");
 			double distance = spawners.getDouble(key + ".MaxDistance");
 			
@@ -272,13 +270,7 @@ public class BossApi extends JavaPlugin implements Listener{
 			//Bukkit.getConsoleSender().sendMessage("location," + loc.toString());
 			
 			Spawner s = new Spawner(key, this, b, loc, (long) delay, distance);
-			ArrayList<Spawner> list = worldSpawner.get(w);
-			if(list == null){
-				list = new ArrayList<Spawner>();
-			}
-			list.add(s);
-			worldSpawner.put(w, list);
-			this.spawnerList.add(s);
+            addSpawner(s);
 		}
 	}
 
@@ -703,6 +695,7 @@ public class BossApi extends JavaPlugin implements Listener{
 									double cd = Double.parseDouble(args[4]);
 									double dist = Double.parseDouble(args[5]);
 									Spawner s = new Spawner(spawnName, this, b, p.getLocation(), (long) cd, dist);
+                                    addSpawner(s);
 									s.save(spawnName);
 								}
 								else{
@@ -1116,7 +1109,7 @@ public class BossApi extends JavaPlugin implements Listener{
 	}
 	
 	public String convertToMColors(String line){
-		return line.replaceAll("&", "§");
+		return line.replaceAll("&", "ï¿½");
 	}
 	
 	public boolean isBoss(Entity ent){
@@ -1139,16 +1132,11 @@ public class BossApi extends JavaPlugin implements Listener{
 	public void OnBossDeathEvent(EntityDeathEvent e){
 		if(isBoss(e.getEntity())){
 			Entity ent = e.getEntity();
-			for(Spawner s : spawnerList){
-				if(s.notifyDeath((Creature) ent)){
-					break;
-				}
-			}
 			BossInstance bi = bossIds.get(ent.getEntityId());
 			
 			if(bi.b.removeMountOnDeath){
-				bi.mount.ent.remove();
-				Bukkit.getPluginManager().callEvent(new BossDeathEvent(bi.mount, bi.mount.ent));
+				bi.mount.bossEntity.remove();
+				Bukkit.getPluginManager().callEvent(new BossDeathEvent(bi.mount, bi.mount.bossEntity));
 			}
 			
 			Bukkit.getPluginManager().callEvent(new BossDeathEvent(bi, ent));
@@ -1158,16 +1146,17 @@ public class BossApi extends JavaPlugin implements Listener{
 			worldBossIds.put(ent.getWorld(), worldIds);
 			bossEntities.remove(bossIds.get(ent.getEntityId()));
 			bossIds.remove(ent.getEntityId());
-			
+
 			if(bi.b.expReward != 0){
 				e.setDroppedExp(bi.b.expReward);
 			}
 		}
 	}
-	
+
 	@EventHandler
-	public void OnBossDeath(BossDeathEvent e){
-		itemManager.dropItems(e);
+	public void onBossDeath(BossDeathEvent e){
+        e.getBossInstance().spawner.bossDied();
+        itemManager.dropItems(e);
 	}
 	
 	@EventHandler
@@ -1186,7 +1175,7 @@ public class BossApi extends JavaPlugin implements Listener{
 		bossEntities.put(bi, ent.getEntityId());
 		bossIds.put(ent.getEntityId(), bi);
 		
-		//Bukkit.getConsoleSender().sendMessage(bi.b.name + " was spawned at location, " + e.getLivingEntity().getLocation().toString());
+		//Bukkit.getConsoleSender().sendMessage(bossInstance.boss.name + " was spawned at location, " + e.getLivingEntity().getLocation().toString());
 		
 	}
 	
@@ -1200,7 +1189,7 @@ public class BossApi extends JavaPlugin implements Listener{
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
-	public void OnBossDamage(EntityDamageByEntityEvent e){
+	public void onBossDamage(EntityDamageByEntityEvent e){
 		//OnHit Check - Boss deals damage
 		if(isBoss(e.getDamager())){
 			BossInstance bi = bossIds.get(e.getDamager().getEntityId());
@@ -1214,43 +1203,34 @@ public class BossApi extends JavaPlugin implements Listener{
 			}
 		}
 	}
-	
-	private boolean chunkEquals(Chunk a, Chunk b){
-		if(a.getX() == b.getX()){
-			if(a.getZ() == b.getZ()){
-				return true;
-			}
-		}
-		return false;
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onChunkUnload(ChunkUnloadEvent e){
+        for (Spawner s : this.spawnerList) {
+            if (s.isInChunk(e.getChunk())) {
+                s.stopSpawning();
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+	public void onChunkLoad(ChunkLoadEvent e){
+        for (Spawner s : this.spawnerList) {
+            if (s.isInChunk(e.getChunk())) {
+                if (!s.isSpawnTaskRunning()) {
+                    s.spawnBoss();
+                }
+            }
+        }
 	}
-	
-	@EventHandler
-	public void OnChunkUnload(ChunkUnloadEvent e){
-		Chunk c = e.getChunk();
-		Spawner s = chunkGetSpawner(c);
-		if(s != null){
-			s.unLoad(true);
-		}
-	}
-	
-	public Spawner chunkGetSpawner(Chunk c){
-		if(worldSpawner.containsKey(c.getWorld())){
-			for(Spawner s : worldSpawner.get(c.getWorld())){
-				if(chunkEquals(s.c, c)){
-					return s;
-				}
-			}
-		}
-		return null;
-	}
-	
-	@EventHandler
-	public void OnChunkLoad(ChunkLoadEvent e){
-		Spawner s = chunkGetSpawner(e.getChunk());
-		if(s != null){
-			s.reLoad();
-		}
-	}
+
+    public void addSpawner(Spawner s) {
+        this.spawnerList.add(s);
+    }
+
+    public ArrayList<Spawner> getSpawners() {
+        return this.spawnerList;
+    }
 	
 	public List<String> convertToMColors(List<String> lore) {
 		List<String> newLore = new ArrayList<String>();
@@ -1259,46 +1239,4 @@ public class BossApi extends JavaPlugin implements Listener{
 		}
 		return newLore;
 	}
-
-	@EventHandler
-	public void OnWorldUnload(WorldUnloadEvent e){
-		for(Spawner s : this.worldSpawner.get(e.getWorld())){
-			s.unLoad(false);
-		}
-		
-		worldSpawner.remove(e.getWorld());
-	}
-	
-	@EventHandler
-	public void OnWorldLoad(WorldLoadEvent e){
-		if(spawnerList.isEmpty()){
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable(){
-
-				@Override
-				public void run() {
-					OnWorldLoad(e);
-				}
-				
-			}, 40);
-		}
-		else{
-			World w = e.getWorld();
-			ArrayList<Spawner> list = worldSpawner.get(w);
-			if(list != null){
-				for(Spawner s : this.worldSpawner.get(w)){
-					s.unLoad(false);
-				}
-			}
-			
-			ArrayList<Spawner> spawners = new ArrayList<Spawner>();
-			for(Spawner s : spawnerList){
-				if(s.loc.getWorld().equals(w)){
-					spawners.add(s);
-					s.reLoad();
-				}
-			}
-			worldSpawner.put(w, spawners);
-		}
-	}
-	
 }

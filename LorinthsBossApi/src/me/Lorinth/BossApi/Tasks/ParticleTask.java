@@ -1,4 +1,4 @@
-package me.Lorinth.BossApi;
+package me.Lorinth.BossApi.Tasks;
 
 import java.util.Random;
 

@@ -37,7 +37,7 @@ public class Summon extends Action{
 				if(b == null){
 					b = BossApi.getPlugin().bossNames.get(bossname);
 				}
-				//System.out.println("Trying to spawn, " + b.name);
+				//System.out.println("Trying to spawn, " + boss.name);
 				b.spawn(ent.getLocation(), false);
 			}
 		}
