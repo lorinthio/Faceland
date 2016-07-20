@@ -3,7 +3,6 @@ package me.Lorinth.BossApi;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -106,7 +105,6 @@ public class Spawner {
     }
 
     public void killBoss() {
-        api.bossEntities.remove(this.getBoss().bossEntity);
         if (this.getBoss() == null) {
             return;
         }
@@ -114,11 +112,13 @@ public class Spawner {
             getBoss().mount.bossEntity.remove();
         }
         this.getBoss().bossEntity.remove();
+        api.bossEntities.remove(this.getBoss().bossEntity);
         setBoss(null);
     }
 
     public void bossDied() {
         this.bossDeathTime = System.currentTimeMillis();
+        api.bossEntities.remove(this.getBoss().bossEntity);
         setBoss(null);
     }
 }

@@ -207,8 +207,8 @@ public class BossApi extends JavaPlugin implements Listener{
         	this.worldBossIds.put(w, new ArrayList<Integer>());
         }
 		spawnTask.runTaskTimer(this,
-				20L * 30, // Start timer after 10s
-				20L * 15 // Run it every 15s
+				20L * 60, // Start timer after 60s
+				20L * 10 // Run it every 10s
 		);
         
         loadYamls();
