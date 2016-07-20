@@ -65,7 +65,7 @@ public class WarpConfirmWindow {
         if(e.getSlot() == 14){
             play.closeInventory();
             }
-        if(e.getSlot() == 22){
+        if(e.getSlot() == 26){
             play.closeInventory();
             profile.knownWarps.remove(warp.ID);
             play.sendMessage(ChatColor.YELLOW + "You have forgotten the warp " + warp.name + ChatColor.YELLOW + "!");

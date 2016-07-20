@@ -186,7 +186,9 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 		try{
 			Set<String> accessList = warpsYml.getConfigurationSection("AccessPoints").getKeys(false);
 			for(String id : accessList){
+				System.out.println("Loading warps...");
 				Warp w = LoadAccess(id);
+				System.out.println("Loading complete!");
 				HashMap<Vector, Warp> warps = locationWarps.get(w.loc.getWorld());
 				if(warps.containsKey(w.loc.toVector().toBlockVector())){
 					DestroyWarp(w);
@@ -290,8 +292,6 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 	}
 	
 	public Warp LoadAccess(String key){
-		printLine("Loading, " + key);
-		
 		Warp w = new Warp(this);
 		String worldname = warpsYml.getString("AccessPoints." + key + ".Location.World");
 		double x, y, z;
