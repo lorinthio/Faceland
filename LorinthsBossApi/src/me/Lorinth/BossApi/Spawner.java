@@ -9,22 +9,17 @@ import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 public class Spawner {
     private final Spawner spawner;
     private BossApi api;
-    private int spawnTaskId = 0;
 
     public BossInstance bossInstance;
 	public Boss boss;
 	public long respawnDelay;
+    public long bossDeathTime = System.currentTimeMillis();
     public int resetCount = 0;
 	public double maxDistance;
-	public double maxDistSqr;
 	public Location loc;
 
 	public String key;
@@ -37,7 +32,6 @@ public class Spawner {
 		this.loc = loc;
 		this.respawnDelay = delay;
 		this.maxDistance = distance;
-		this.maxDistSqr = ((distance + 1.0D) * (distance + 1.0D));
 		this.spawner = this;
 	}
 
@@ -83,7 +77,7 @@ public class Spawner {
     }
 
     public void setResetCount(int amount) {
-        if (amount > 3) {
+        if (amount >= 3) {
             killBoss();
             spawnBoss();
             amount = 0;
@@ -95,41 +89,26 @@ public class Spawner {
         return  this.resetCount;
     }
 
-    public boolean isInChunk(Chunk chunk) {
-        return this.loc.getChunk() == chunk;
-    }
-
     public void spawnBoss() {
+        if (this.getBoss() != null) {
+            return;
+        }
         this.bossInstance = this.boss.spawn(this.loc, true);
         this.bossInstance.spawner = this.spawner;
     }
 
     public void killBoss() {
         api.bossEntities.remove(this.getBoss().bossEntity);
+        if (this.getBoss() == null) {
+            return;
+        }
+        if (getBoss().mount != null) {
+            getBoss().mount.bossEntity.remove();
+        }
         this.getBoss().bossEntity.remove();
     }
 
     public void bossDied() {
-        this.spawnTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(BossApi.getPlugin(), new Runnable() {
-            public void run() {
-                if (spawner.loc.getChunk().isLoaded()) {
-                    spawner.spawnBoss();
-                }
-            }
-        }, this.respawnDelay * 20L);
-    }
-
-    public boolean isSpawnTaskRunning() {
-        return Bukkit.getScheduler().isCurrentlyRunning(this.spawnTaskId);
-    }
-
-    public void stopSpawning() {
-        this.resetCount = 0;
-        if (getBoss() != null) {
-            if (getBoss().mount != null) {
-                getBoss().mount.bossEntity.remove();
-            }
-            killBoss();
-        }
+        this.bossDeathTime = System.currentTimeMillis();
     }
 }

@@ -39,8 +39,9 @@ public class Boss {
 	public Effect particle;
 	
 	public String key;
-	
-	public ItemStack held = new ItemStack(Material.AIR);
+
+    public ItemStack held = new ItemStack(Material.AIR);
+    public ItemStack off = new ItemStack(Material.AIR);
 	public ItemStack helm = new ItemStack(Material.AIR);
 	public ItemStack chest = new ItemStack(Material.AIR);
 	public ItemStack legs = new ItemStack(Material.AIR);
@@ -62,13 +63,14 @@ public class Boss {
 	}
 	
 	@SuppressWarnings({ "deprecation" })
-	public BossInstance spawn(Location loc, boolean spawnerLinked){
-		loc.add(0.5, 0, 0.5);
+	public BossInstance spawn(Location loc, boolean spawnerLinked) {
 		
 		CraftWorld world = (CraftWorld) loc.getWorld();
 		LivingEntity entity = (LivingEntity) world.spawnEntity(loc, type);
-		entity.getEquipment().setItemInHand(held);
-		entity.getEquipment().setItemInHandDropChance(0);
+        entity.getEquipment().setItemInMainHand(held);
+        entity.getEquipment().setItemInMainHandDropChance(0);
+		entity.getEquipment().setItemInOffHand(off);
+        entity.getEquipment().setItemInOffHandDropChance(0);
 		entity.getEquipment().setHelmet(helm);
 		entity.getEquipment().setHelmetDropChance(0);
 		entity.getEquipment().setChestplate(chest);

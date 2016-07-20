@@ -27,11 +27,10 @@ import me.Lorinth.BossApi.Abilities.TrueDamage;
 import me.Lorinth.BossApi.Abilities.Wait;
 import me.Lorinth.BossApi.Events.BossDeathEvent;
 import me.Lorinth.BossApi.Events.BossSpawnEvent;
-import me.Lorinth.BossApi.Tasks.DistanceTask;
+import me.Lorinth.BossApi.Tasks.SpawnTask;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -50,8 +49,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
@@ -59,7 +56,7 @@ import org.bukkit.potion.PotionEffectType;
 public class BossApi extends JavaPlugin implements Listener{
 
 	private static BossApi instance;
-    private DistanceTask distanceTask;
+    private SpawnTask spawnTask;
 	public HashMap<String, Boss> bossNames = new HashMap<String, Boss>();
 	public HashMap<BossInstance, Integer> bossEntities = new HashMap<BossInstance, Integer>();
 	public HashMap<Integer, BossInstance> bossIds = new HashMap<Integer, BossInstance>();
@@ -185,7 +182,7 @@ public class BossApi extends JavaPlugin implements Listener{
 		instance = this;
 		
 		itemManager = new ItemManager(this);
-        distanceTask = new DistanceTask(this);
+        spawnTask = new SpawnTask(this);
 		
 		bossesFile = new File(getDataFolder(), "Bosses.yml");
 		spawnersFile = new File(getDataFolder(), "Spawners.yml");
@@ -208,7 +205,7 @@ public class BossApi extends JavaPlugin implements Listener{
         for(World w : Bukkit.getWorlds()){
         	this.worldBossIds.put(w, new ArrayList<Integer>());
         }
-		distanceTask.runTaskTimer(this,
+		spawnTask.runTaskTimer(this,
 				20L * 30, // Start timer after 10s
 				20L * 15 // Run it every 15s
 		);
@@ -696,6 +693,7 @@ public class BossApi extends JavaPlugin implements Listener{
 									double dist = Double.parseDouble(args[5]);
 									Spawner s = new Spawner(spawnName, this, b, p.getLocation(), (long) cd, dist);
                                     addSpawner(s);
+									s.spawnBoss();
 									s.save(spawnName);
 								}
 								else{
@@ -1109,7 +1107,7 @@ public class BossApi extends JavaPlugin implements Listener{
 	}
 	
 	public String convertToMColors(String line){
-		return line.replaceAll("&", "�");
+		return line.replaceAll("&", "§");
 	}
 	
 	public boolean isBoss(Entity ent){
@@ -1202,26 +1200,6 @@ public class BossApi extends JavaPlugin implements Listener{
 				projectiles.remove(e.getDamager());
 			}
 		}
-	}
-
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onChunkUnload(ChunkUnloadEvent e){
-        for (Spawner s : this.spawnerList) {
-            if (s.isInChunk(e.getChunk())) {
-                s.stopSpawning();
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL)
-	public void onChunkLoad(ChunkLoadEvent e){
-        for (Spawner s : this.spawnerList) {
-            if (s.isInChunk(e.getChunk())) {
-                if (!s.isSpawnTaskRunning()) {
-                    s.spawnBoss();
-                }
-            }
-        }
 	}
 
     public void addSpawner(Spawner s) {
