@@ -1,7 +1,5 @@
 package me.Lorinth.BossApi.Tasks;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.Lorinth.BossApi.BossApi;
@@ -13,7 +11,6 @@ public class SpawnTask extends BukkitRunnable {
 
 	public SpawnTask(BossApi api) {
         this.api = api;
-
 	}
 
 	@Override
