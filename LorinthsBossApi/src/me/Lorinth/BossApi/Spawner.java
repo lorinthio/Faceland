@@ -72,6 +72,10 @@ public class Spawner {
         return this.bossInstance;
     }
 
+    public void setBoss(BossInstance boss) {
+        this.bossInstance = boss;
+    }
+
     public double getRadius() {
         return this.maxDistance;
     }
@@ -87,6 +91,10 @@ public class Spawner {
 
     public int getResetCount() {
         return  this.resetCount;
+    }
+
+    public boolean isInChunk(Chunk chunk) {
+        return spawner.loc.getChunk() == chunk;
     }
 
     public void spawnBoss() {
@@ -106,9 +114,11 @@ public class Spawner {
             getBoss().mount.bossEntity.remove();
         }
         this.getBoss().bossEntity.remove();
+        setBoss(null);
     }
 
     public void bossDied() {
         this.bossDeathTime = System.currentTimeMillis();
+        setBoss(null);
     }
 }

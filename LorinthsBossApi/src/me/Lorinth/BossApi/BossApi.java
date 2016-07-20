@@ -49,6 +49,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
@@ -1185,7 +1186,7 @@ public class BossApi extends JavaPlugin implements Listener{
 			
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW)
 	public void onBossDamage(EntityDamageByEntityEvent e){
 		//OnHit Check - Boss deals damage
@@ -1200,6 +1201,18 @@ public class BossApi extends JavaPlugin implements Listener{
 				projectiles.remove(e.getDamager());
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onChunkUnload(ChunkUnloadEvent e){
+		for (Spawner s : spawnerList) {
+            if (!s.isInChunk(e.getChunk())) {
+                continue;
+            }
+            Bukkit.getLogger().info("UNLOADED CHUNK WITH SPAWNER IN IT!");
+            s.killBoss();
+            s.setResetCount(0);
+        }
 	}
 
     public void addSpawner(Spawner s) {
