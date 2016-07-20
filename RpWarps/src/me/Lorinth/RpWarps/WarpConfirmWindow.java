@@ -28,41 +28,48 @@ public class WarpConfirmWindow {
 	}
 	
 	void makeInventory(){
-		inv = Bukkit.createInventory(null, 27, warp.name);
+		inv = Bukkit.createInventory(null, 27, ChatColor.BLACK + "" + ChatColor.WHITE +"★" + warp.name);
 		
 		ItemStack warpItem = new ItemStack(Material.NETHER_STAR);
 		ItemMeta meta = warpItem.getItemMeta();
-		meta.setDisplayName(ChatColor.GREEN + "Warp here!");
+		meta.setDisplayName(ChatColor.GREEN + "Warp Now!");
 		warpItem.setItemMeta(meta);
-		
-		ItemStack forgetItem = new ItemStack(Material.BARRIER);
-		meta = forgetItem.getItemMeta();
-		meta.setDisplayName(ChatColor.RED + "Forget this warp!");
-		forgetItem.setItemMeta(meta);
+
+        ItemStack cancelItem = new ItemStack(Material.COAL);
+        meta = cancelItem.getItemMeta();
+        meta.setDisplayName(ChatColor.YELLOW + "Cancel");
+        cancelItem.setItemMeta(meta);
+
+        ItemStack forgetItem = new ItemStack(Material.REDSTONE);
+        meta = forgetItem.getItemMeta();
+        meta.setDisplayName(ChatColor.RED + "Delete Warp");
+        forgetItem.setItemMeta(meta);
 		
 		
 		inv.setItem(12, warpItem);
-		inv.setItem(14, forgetItem);
+		inv.setItem(14, cancelItem);
+		inv.setItem(26, forgetItem);
 		
 		play.openInventory(inv);
 	}
 	
 	void handleClickEvent(InventoryClickEvent e){
-		try{
-			if(e.getSlot() == 12){
-				play.closeInventory();
-				warp.teleport(play);
-				play.sendMessage(ChatColor.GREEN + "You have warped to " + warp.name + ChatColor.GREEN + "!");
-			}
-			if(e.getSlot() == 14){
-				play.closeInventory();
-				profile.knownWarps.remove(warp.ID);
-				play.sendMessage(ChatColor.YELLOW + "You have forgotten the warp " + warp.name + ChatColor.YELLOW + "!");
-			}
-		}
-		catch(NullPointerException error){
-			//NO ITEM CLICKED
-		}
+        if (!(e.getInventory().getName().startsWith(ChatColor.BLACK + "" + ChatColor.WHITE + "★"))) {
+            return;
+        }
+        if(e.getSlot() == 12){
+            play.closeInventory();
+            warp.teleport(play);
+            play.sendMessage(ChatColor.GREEN + "You have warped to " + warp.name + ChatColor.GREEN + "!");
+        }
+        if(e.getSlot() == 14){
+            play.closeInventory();
+            }
+        if(e.getSlot() == 22){
+            play.closeInventory();
+            profile.knownWarps.remove(warp.ID);
+            play.sendMessage(ChatColor.YELLOW + "You have forgotten the warp " + warp.name + ChatColor.YELLOW + "!");
+        }
 	}
 	
 }
