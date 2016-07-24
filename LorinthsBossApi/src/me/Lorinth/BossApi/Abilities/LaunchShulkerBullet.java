@@ -10,7 +10,6 @@ import me.Lorinth.BossApi.BossApi;
 public class LaunchShulkerBullet extends Action{
 
 	double damage;
-	double speed;
 	TargetType type;
 	double radius;
 

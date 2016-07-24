@@ -262,7 +262,7 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 	public void CreateWarp(Location loc, Player p){
 		String id = getNextId();
 		Warp w = new Warp(this, id, loc, p);
-		
+
 		profiles.get(p).AddWarp(w);
 		
 		this.playerWarps.put(id, w);
@@ -525,8 +525,8 @@ public class RpWarpsMain extends JavaPlugin implements Listener{
 		if(w != null){
 			if(w.isOwnedByPlayer(p)){
 				try{
-					if(p.getItemInHand() != null){
-						w.mat = p.getItemInHand().getType();
+					if(p.getEquipment().getItemInMainHand() != null){
+						w.mat = p.getEquipment().getItemInMainHand().getType();
 						if(w.mat == Material.AIR){
 							w.mat = Material.ENDER_PEARL;
 						}

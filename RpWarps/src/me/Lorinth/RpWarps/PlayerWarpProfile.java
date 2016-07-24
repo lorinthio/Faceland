@@ -36,7 +36,7 @@ public class PlayerWarpProfile {
 		}
 		
 		if(!knownWarps.contains(w.ID)){
-			if(knownWarps.size() <= 36){
+			if(knownWarps.size() < 36){
 				knownWarps.add(w.ID);
 				p.sendMessage(ChatColor.GREEN + "This location has been memorized and added to your list!");
 				p.sendMessage(ChatColor.GREEN + "You now have access to " + w.name + ChatColor.GREEN + "!");
