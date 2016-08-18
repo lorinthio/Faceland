@@ -337,6 +337,15 @@ public class BossApi extends JavaPlugin implements Listener{
 							b.held = itemManager.getItem((String)o).clone();
 						}
 					}
+					if(key2.equalsIgnoreCase("off")){
+						Object o = bosses.get(key + ".Equipment." + key2);
+						if(o instanceof Number){
+							b.off = new ItemStack((int)o);
+						}
+						else if(o instanceof String){
+							b.off = itemManager.getItem((String)o).clone();
+						}
+					}
 					else if(key2.equalsIgnoreCase("helm")){
 						Object o = bosses.get(key + ".Equipment." + key2);
 						if(o instanceof Number){
