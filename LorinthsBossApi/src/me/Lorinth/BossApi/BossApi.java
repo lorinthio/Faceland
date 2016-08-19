@@ -352,7 +352,17 @@ public class BossApi extends JavaPlugin implements Listener{
 							b.helm = new ItemStack((int)o);
 						}
 						else if(o instanceof String){
-							b.helm = itemManager.getItem((String)o).clone();
+							if(((String) o).contains("player_")){
+								String playername = ((String) o).replace("player_", "");
+								ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+								SkullMeta sm = (SkullMeta) head.getItemMeta();
+					        	sm.setOwner(playername.trim());
+					        	head.setItemMeta(sm);
+								b.helm = head;
+							}
+							else{
+								b.helm = itemManager.getItem((String)o).clone();
+							}
 						}
 					}
 					else if(key2.equalsIgnoreCase("chest")){
