@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class LootTableSet {
 
-	public List<LootTable> set = new ArrayList<LootTable>();
+	private List<LootTable> set = new ArrayList<>();
 	
 	public LootTableSet(){
 		//
@@ -19,7 +19,7 @@ public class LootTableSet {
 	}
 	
 	public List<ItemStack> getLoot(){
-		List<ItemStack> items = new ArrayList<ItemStack>();
+		List<ItemStack> items = new ArrayList<>();
 		for(LootTable table : set){
 			ItemStack drop = table.getDrop();
 			if(drop.getType() != Material.AIR){

@@ -44,7 +44,7 @@ public class BossInstance {
 	
 	public void StartParticles(){
 		if(particle != null){
-			ParticleTask task = new ParticleTask(bossEntity, particle, effectRadius, effectCount, effectData);
+			ParticleTask task = new ParticleTask(bossEntity, particle, effectCount, effectData);
 			task.runTaskTimer(BossApi.getPlugin(), 0, 5);
 		}
 	}

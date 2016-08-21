@@ -3,26 +3,23 @@ package me.Lorinth.BossApi.Tasks;
 import java.util.Random;
 
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ParticleTask extends BukkitRunnable {
 
-	double radius;
-	double count;
-	Effect effect;
-	int data;
-	LivingEntity ent;
+	private double count;
+	private Effect effect;
+	private int data;
+	private LivingEntity ent;
 	
-	Random r = new Random();
+	private Random r = new Random();
 	
-	public ParticleTask(LivingEntity ent, Effect particle, double effectRadius, double effectCount, int data) {
+	public ParticleTask(LivingEntity ent, Effect particle, double effectCount, int data) {
 		this.ent = ent;
 		effect = particle;
 		count = effectCount;
-		radius = effectRadius;
 		this.data = data;
 	}
 

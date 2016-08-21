@@ -33,6 +33,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -51,6 +53,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffectType;
 
@@ -337,7 +340,7 @@ public class BossApi extends JavaPlugin implements Listener{
 							b.held = itemManager.getItem((String)o).clone();
 						}
 					}
-					if(key2.equalsIgnoreCase("off")){
+					else if(key2.equalsIgnoreCase("off")){
 						Object o = bosses.get(key + ".Equipment." + key2);
 						if(o instanceof Number){
 							b.off = new ItemStack((int)o);
@@ -352,7 +355,7 @@ public class BossApi extends JavaPlugin implements Listener{
 							b.helm = new ItemStack((int)o);
 						}
 						else if(o instanceof String){
-							if(((String) o).contains("player_")){
+							if(((String) o).startsWith("player_")){
 								String playername = ((String) o).replace("player_", "");
 								ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
 								SkullMeta sm = (SkullMeta) head.getItemMeta();

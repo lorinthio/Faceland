@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class LootTable {
 
-	public HashMap<ItemStack, Double> table = new HashMap<ItemStack, Double>();
-	Random r = new Random();
+	private HashMap<ItemStack, Double> table = new HashMap<ItemStack, Double>();
+	private Random r = new Random();
 	
 	public void AddItem(ItemStack i, Double d){
 		table.put(removeAttributes(i), d);
@@ -40,7 +40,7 @@ public class LootTable {
 		return item;
 	}
 	
-	public static ItemStack removeAttributes(ItemStack i) {
+	private static ItemStack removeAttributes(ItemStack i) {
         if(i == null) {
             return i;
         }
